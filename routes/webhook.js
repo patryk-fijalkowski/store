@@ -4,6 +4,7 @@ var router = express.Router();
 /* GET users listing. */
 router.post("/", function (req, res, next) {
   console.log("Visited webhook");
+  console.log("Visited webhook");
   console.log(req.body);
   res.send("Shoper webhoook");
 });
