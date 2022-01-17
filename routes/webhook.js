@@ -6,11 +6,13 @@ var db = require("../db");
 router.post("/", function (req, res, next) {
   console.log("Visited webhook");
 
+  console.log(req.body);
+
   const data = {
-    date: req.body.date,
-    sum: req.body.sum,
-    source: req.body.payment.name === "Allegro" ? "Allegro" : "Sklep",
-    products: JSON.stringify(req.body.products),
+    date: req.body?.date,
+    sum: req.body?.sum,
+    source: req.body?.payment?.name === "Allegro" ? "Allegro" : "Sklep",
+    products: req.body?.products ? JSON.stringify(req.body.products) : null,
     body: JSON.stringify(req.body),
   };
   db.collection("Orders").doc().set(data);
