@@ -7,6 +7,7 @@ router.post("/", function (req, res, next) {
   console.log("Visited webhook");
 
   console.log(req.get("host"));
+  console.log(req.get("origin"));
 
   const data = {
     date: req.body.date,
