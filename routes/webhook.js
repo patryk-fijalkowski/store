@@ -2,13 +2,9 @@ var express = require("express");
 var User = require("../db");
 var router = express.Router();
 var db = require("../db");
+
 /* GET users listing. */
 router.post("/", function (req, res, next) {
-  console.log("Visited webhook");
-
-  console.log(req.get("host"));
-  console.log(req.get("origin"));
-
   try {
     const data = {
       date: req.body.date,
