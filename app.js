@@ -24,12 +24,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(authMiddleware);
-app.use(allegroMiddleware);
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/webhook", webhook);
-app.use("/auctions", auctions);
+app.use("/users", allegroMiddleware, authMiddleware, usersRouter);
+app.use("/webhook", allegroMiddleware, authMiddleware, webhook);
+app.use("/auctions", allegroMiddleware, authMiddleware, auctions);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
