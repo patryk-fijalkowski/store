@@ -6,7 +6,7 @@ var qs = require("qs");
 router.get("/", async function (req, res, next) {
   if (global.isAccessVerified) {
     res.render("index", { title: "Pomyślnie zweryfikowany" });
-    res.send("OK");
+    return;
   }
 
   console.log("tu juz nie doszło");
