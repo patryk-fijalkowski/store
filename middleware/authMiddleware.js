@@ -17,8 +17,7 @@ var authMiddleware = async function (req, res, next) {
     global.shoperAccessToken = response.data.access_token;
     next();
   } catch (error) {
-    console.error(error.response.status);
-    res.status(error.response.status).send(error);
+    res.status(500).send(error);
   }
 };
 
