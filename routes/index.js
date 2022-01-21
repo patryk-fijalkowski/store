@@ -6,7 +6,11 @@ var qs = require("qs");
 router.get("/", async function (req, res, next) {
   if (global.isAccessVerified) {
     res.render("index", { title: "Pomyślnie zweryfikowany" });
+    res.send("OK");
   }
+
+  console.log("tu juz nie doszło");
+
   const token = Buffer.from(`${process.env.ALLEGRO_CLIENT_ID}:${process.env.ALLEGRO_CLIENT_SECRET}`, "utf8").toString(
     "base64"
   );
