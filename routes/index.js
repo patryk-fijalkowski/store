@@ -4,7 +4,9 @@ const axios = require("axios").default;
 var qs = require("qs");
 /* GET home page. */
 router.get("/", async function (req, res, next) {
-  console.log(process.env);
+  if (global.isAccessVerified) {
+    res.render("index", { title: "Pomyślnie zweryfikowany" });
+  }
   const token = Buffer.from(`${process.env.ALLEGRO_CLIENT_ID}:${process.env.ALLEGRO_CLIENT_SECRET}`, "utf8").toString(
     "base64"
   );
