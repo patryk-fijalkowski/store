@@ -27,7 +27,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 // app.use("/users", allegroMiddleware, authMiddleware, usersRouter);
 app.use("/users", usersRouter);
-app.use("/webhook", allegroMiddleware, authMiddleware, webhook);
+// app.use("/webhook", allegroMiddleware, authMiddleware, webhook);
+app.use("/webhook", authMiddleware, webhook);
 app.use("/auctions", allegroMiddleware, authMiddleware, auctions);
 
 // catch 404 and forward to error handler

@@ -18,7 +18,6 @@ var allegroMiddleware = async function (req, res, next) {
     );
     global.allegroAccessToken = response.data.access_token;
     global.allegroRefreshToken = response.data.refresh_token;
-    console.log(response.data);
     next();
   } else {
     res.send("Please verify your device");
