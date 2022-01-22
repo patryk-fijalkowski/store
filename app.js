@@ -11,6 +11,7 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var webhook = require("./routes/webhook");
 var auctions = require("./routes/auctions");
+var auth = require("./routes/auth");
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
+app.use("/auth", auth);
 // app.use("/users", allegroMiddleware, authMiddleware, usersRouter);
 app.use("/users", usersRouter);
 // app.use("/webhook", allegroMiddleware, authMiddleware, webhook);
