@@ -7,6 +7,7 @@ var db = require("../db");
 
 /* GET users listing. */
 router.post("/", async function (req, res, next) {
+  req.setTimeout(500000);
   try {
     let bulkRequestBody = req.body.products.map((el) => ({
       id: `product_id_${el.product_id}`,
