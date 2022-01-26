@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/api/auth", auth);
+app.use("/auth", auth);
 // app.use("/users", allegroMiddleware, authMiddleware, usersRouter);
 app.use("/users", usersRouter);
 // app.use("/webhook", allegroMiddleware, authMiddleware, webhook);

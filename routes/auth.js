@@ -19,7 +19,8 @@ router.post("/", async function (req, res, next) {
     );
     res.send({ accessToken: response.data.access_token });
   } catch (e) {
-    res.send(e);
+    console.log(e.response.status);
+    res.status(e.response.status).send({ message: "Niepoprawny login lub hasło" });
   }
 });
 
