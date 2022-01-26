@@ -12,6 +12,10 @@ var usersRouter = require("./routes/users");
 var webhook = require("./routes/webhook");
 var auctions = require("./routes/auctions");
 var auth = require("./routes/auth");
+var orders = require("./routes/orders");
+var products = require("./routes/products");
+var orderedProducts = require("./routes/orderedProducts");
+var shippingsMethod = require("./routes/shippingsMethod");
 
 var app = express();
 
@@ -27,7 +31,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/auth", auth);
-// app.use("/users", allegroMiddleware, authMiddleware, usersRouter);
+app.use("/orders", orders);
+app.use("/products", products);
+app.use("/ordered-products", orderedProducts);
+app.use("/shippings-method", shippingsMethod);
 app.use("/users", usersRouter);
 // app.use("/webhook", allegroMiddleware, authMiddleware, webhook);
 app.use("/webhook", authMiddleware, webhook);
