@@ -26,13 +26,13 @@ ALTER TABLE IF EXISTS public."Orders"
 CREATE TABLE IF NOT EXISTS public."Products"
 (
     product_id bigint NOT NULL,
-    price "char" NOT NULL,
     stock_id bigint NOT NULL,
-    quantity bigint NOT NULL,
-    name "char",
-    code "char" NOT NULL,
-    stock_amount bigint NOT NULL,
-    children "char"[]
+    stock_amount bigint,
+    price character varying(100),
+    code character varying(100),
+    name character varying(1000),
+    children json,
+    CONSTRAINT "Products_pkey" PRIMARY KEY (product_id)
 )
 
 TABLESPACE pg_default;

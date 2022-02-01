@@ -3,7 +3,39 @@ var express = require('express');
 const moment = require('moment');
 var router = express.Router();
 const client = require('../db');
+const getBulkUtil = require('../utils/getBulkUtil');
 /* GET users listing. */
+
+const updateProductsInDB = async () => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${global.shoperAccessToken}` || '',
+    },
+  };
+
+  const data = await getBulkUtil('products', config);
+  const productsToInsert = data.map(
+    (product) =>
+      `('${product.product_id}', '${product.stock.stock_id}', '${product.stock.stock}', '${product.stock.price}', '${product.code}', '${
+        product.translations.pl_PL.name
+      }', '${
+        product.children ? JSON.stringify(product.children.map((child) => ({ product_id: child.product_id, quantity: child.stock }))) : null
+      }')`
+  );
+  let query = `INSERT INTO public."Products"(
+    product_id, stock_id, stock_amount, price, code, name, children)
+    VALUES ${productsToInsert}
+  `;
+
+  client.query(query, (err, res) => {
+    if (!err) {
+      console.log(res.rows);
+    } else {
+      console.log(err.message);
+    }
+    client.end;
+  });
+};
 
 router.post('/', async function (req, res, next) {
   req.setTimeout(500000);
@@ -25,27 +57,29 @@ router.post('/', async function (req, res, next) {
         children: product.children.map((child) => ({ product_id: child.product_id, quantity: child.quantity })),
       }));
 
-      // let query = `INSERT INTO public."Orders"(
-      //   order_id, order_date, modification_date, paid, source, status, products, shipping_cost, shipping_name)
-      //   VALUES('${order_id}', '${order_date}', '${modification_date}', '${paid}','${source}', '${status}', '${JSON.stringify(products)}',
-      //   '${shipping.cost}', '${shipping.name}')`;
+      let query = `INSERT INTO public."Orders"(
+        order_id, order_date, modification_date, paid, source, status, products, shipping_cost, shipping_name)
+        VALUES('${order_id}', '${order_date}', '${modification_date}', '${paid}','${source}', '${status}', '${JSON.stringify(products)}',
+        '${shipping.cost}', '${shipping.name}')`;
 
-      // client.query(query, (err, res) => {
-      //   if (!err) {
-      //     console.log(res.rows);
-      //   } else {
-      //     console.log(err.message);
-      //   }
-      //   client.end;
-      // });
+      client.query(query, (err, res) => {
+        if (!err) {
+          console.log(res.rows);
+        } else {
+          console.log(err.message);
+        }
+        client.end;
+      });
 
       // SELECT * FROM public."Products" WHERE product_id IN ('2195', '11', '222', '1212')
       const orderedProductsIDs = products
         .map((product) => [product.product_id, ...product.children.map((child) => child.product_id)])
         .flat();
-      console.log(orderedProductsIDs);
 
-      if (true) {
+      const shouldProductsBeUpdate = true;
+
+      if (shouldProductsBeUpdate) {
+        await updateProductsInDB();
       }
 
       break;
