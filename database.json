@@ -1,0 +1,9 @@
+{
+  "dev": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "P@tryk123!",
+    "host": "localhost",
+    "database": "brillardb"
+  }
+}

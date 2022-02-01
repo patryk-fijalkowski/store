@@ -1,11 +1,11 @@
-var admin = require("firebase-admin");
+const { Client } = require('pg');
 
-var serviceAccount = require("./serviceAccountKey.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(JSON.parse(JSON.stringify(serviceAccount))),
+const client = new Client({
+  user: 'postgres',
+  database: 'brillardb',
+  password: 'P@tryk123!',
+  port: 5432,
+  host: 'localhost',
 });
 
-const db = admin.firestore();
-
-module.exports = db;
+module.exports = client;
