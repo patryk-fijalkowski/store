@@ -10,12 +10,12 @@ var allegroMiddleware = require('./middleware/allegroMiddleware');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var webhook = require('./routes/webhook');
-var auctions = require('./routes/auctions');
 var auth = require('./routes/auth');
 var orders = require('./routes/orders');
 var products = require('./routes/products');
 var orderedProducts = require('./routes/orderedProducts');
 var shippingsMethod = require('./routes/shippingsMethod');
+const stockRefreshMiddleware = require('./middleware/stockRefreshMiddleware');
 
 var app = express();
 
@@ -37,8 +37,8 @@ app.use('/ordered-products', orderedProducts);
 app.use('/shippings-method', shippingsMethod);
 app.use('/users', usersRouter);
 // app.use("/webhook", allegroMiddleware, authMiddleware, webhook);
+// app.use('/webhook', authMiddleware, stockRefreshMiddleware, webhook);
 app.use('/webhook', authMiddleware, webhook);
-app.use('/auctions', allegroMiddleware, authMiddleware, auctions);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

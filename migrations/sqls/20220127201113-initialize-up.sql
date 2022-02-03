@@ -25,9 +25,9 @@ ALTER TABLE IF EXISTS public."Orders"
 
 CREATE TABLE IF NOT EXISTS public."Products"
 (
-    product_id bigint NOT NULL,
-    stock_id bigint NOT NULL,
-    stock_amount bigint,
+    product_id character varying(100) NOT NULL,
+    stock_id character varying(100) NOT NULL,
+    stock_amount character varying(100) NOT NULL,
     price character varying(100),
     code character varying(100),
     name character varying(1000),
@@ -38,4 +38,25 @@ CREATE TABLE IF NOT EXISTS public."Products"
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."Products"
+    OWNER to postgres;
+
+-- Table: public.Auctions
+
+CREATE TABLE IF NOT EXISTS public."Auctions"
+(
+    product_id character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    real_auction_id character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    title character varying(1000) COLLATE pg_catalog."default",
+    quantity character varying(100) COLLATE pg_catalog."default",
+    sold character varying(100) COLLATE pg_catalog."default",
+    start_time character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    end_time character varying(100) COLLATE pg_catalog."default",
+    finished boolean,
+    is_draft boolean,
+    CONSTRAINT "Auctions_pkey" PRIMARY KEY (real_auction_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."Auctions"
     OWNER to postgres;

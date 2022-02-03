@@ -1,41 +1,11 @@
 const { default: axios } = require('axios');
 var express = require('express');
 const moment = require('moment');
+var qs = require('qs');
 var router = express.Router();
 const client = require('../db');
 const getBulkUtil = require('../utils/getBulkUtil');
 /* GET users listing. */
-
-const updateProductsInDB = async () => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${global.shoperAccessToken}` || '',
-    },
-  };
-
-  const data = await getBulkUtil('products', config);
-  const productsToInsert = data.map(
-    (product) =>
-      `('${product.product_id}', '${product.stock.stock_id}', '${product.stock.stock}', '${product.stock.price}', '${product.code}', '${
-        product.translations.pl_PL.name
-      }', '${
-        product.children ? JSON.stringify(product.children.map((child) => ({ product_id: child.product_id, quantity: child.stock }))) : null
-      }')`
-  );
-  let query = `INSERT INTO public."Products"(
-    product_id, stock_id, stock_amount, price, code, name, children)
-    VALUES ${productsToInsert}
-  `;
-
-  client.query(query, (err, res) => {
-    if (!err) {
-      console.log(res.rows);
-    } else {
-      console.log(err.message);
-    }
-    client.end;
-  });
-};
 
 router.post('/', async function (req, res, next) {
   req.setTimeout(500000);
@@ -54,32 +24,66 @@ router.post('/', async function (req, res, next) {
       const products = req.body.products.map((product) => ({
         product_id: product.product_id,
         quantity: product.quantity,
-        children: product.children.map((child) => ({ product_id: child.product_id, quantity: child.quantity })),
+        children: product.children && product.children.map((child) => ({ product_id: child.product_id, quantity: child.quantity })),
       }));
 
-      let query = `INSERT INTO public."Orders"(
-        order_id, order_date, modification_date, paid, source, status, products, shipping_cost, shipping_name)
-        VALUES('${order_id}', '${order_date}', '${modification_date}', '${paid}','${source}', '${status}', '${JSON.stringify(products)}',
-        '${shipping.cost}', '${shipping.name}')`;
+      // let query = `INSERT INTO public."Orders"(
+      //   order_id, order_date, modification_date, paid, source, status, products, shipping_cost, shipping_name)
+      //   VALUES('${order_id}', '${order_date}', '${modification_date}', '${paid}','${source}', '${status}', '${JSON.stringify(products)}',
+      //   '${shipping.cost}', '${shipping.name}')`;
 
-      client.query(query, (err, res) => {
-        if (!err) {
-          console.log(res.rows);
-        } else {
-          console.log(err.message);
+      // client.query(query, (err, res) => {
+      //   if (!err) {
+      //     console.log(res.rows);
+      //   } else {
+      //     console.log(err.message);
+      //   }
+      //   client.end;
+      // });
+
+      if (req.body.payment.name !== 'Allegro') {
+        let orderedProducts = req.body.products.map((product) => `'${product.product_id}'`).toString();
+        try {
+          const response = await client.query(
+            `SELECT a.real_auction_id, a.quantity, a.sold, p.product_id, p.stock_amount FROM public."Auctions" a, public."Products" p WHERE a.product_id IN (${orderedProducts}) AND a.finished = false AND a.product_id = p.product_id`
+          );
+
+          const config = {
+            headers: {
+              Authorization: `Bearer ${global.allegroAccessToken}` || '',
+              Accept: 'application/vnd.allegro.beta.v2+json',
+              ['Content-Type']: 'application/vnd.allegro.beta.v2+json',
+            },
+          };
+
+          for (let i = 0; i < response.rows.length; i++) {
+            let test = await axios.get(`${process.env.API_ALLEGRO_URL}/sale/product-offers/${response.rows[i].real_auction_id}`, config);
+
+            console.log('siedzi', test.data.stock);
+          }
+          res.send(response);
+
+          // await axios.patch(
+          //   `${process.env.API_ALLEGRO_URL}/sale/product-offers/${row.real_auction_id}`,
+          //   {
+          //     stock: {
+          //       available: row.stock_amount,
+          //     },
+          //   },
+          //   config
+          // );
+
+          console.log('Pomyślnie zaktualizowano');
+          // res.send(response.rows);
+        } catch (e) {
+          console.log(e);
+          res.send(e);
         }
-        client.end;
-      });
 
-      // SELECT * FROM public."Products" WHERE product_id IN ('2195', '11', '222', '1212')
-      const orderedProductsIDs = products
-        .map((product) => [product.product_id, ...product.children.map((child) => child.product_id)])
-        .flat();
-
-      const shouldProductsBeUpdate = true;
-
-      if (shouldProductsBeUpdate) {
-        await updateProductsInDB();
+        // SELECT * FROM public."Products" WHERE product_id IN ('2195', '11', '222', '1212')
+        // const orderedProductsIDs = products
+        //   .map((product) => [product.product_id, ...product.children.map((child) => child.product_id)])
+        //   .flat();
       }
 
       break;
@@ -87,6 +91,9 @@ router.post('/', async function (req, res, next) {
       console.log(event);
       break;
     case 'product.edit':
+      console.log(event);
+      break;
+    case 'product.create':
       console.log(event);
       break;
     default:
