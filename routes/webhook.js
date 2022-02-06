@@ -3,7 +3,8 @@ var express = require('express');
 const moment = require('moment');
 var qs = require('qs');
 var router = express.Router();
-const client = require('../db');
+const client = require('../db/db');
+const updateDB = require('../db/updateDB');
 const getBulkUtil = require('../utils/getBulkUtil');
 /* GET users listing. */
 
@@ -41,26 +42,27 @@ router.post('/', async function (req, res, next) {
       //   client.end;
       // });
 
+      await updateDB();
       if (req.body.payment.name !== 'Allegro') {
         let orderedProducts = req.body.products.map((product) => `'${product.product_id}'`).toString();
         try {
           const response = await client.query(
-            `SELECT a.real_auction_id, a.quantity, a.sold, p.product_id, p.stock_amount FROM public."Auctions" a, public."Products" p WHERE a.product_id IN (${orderedProducts}) AND a.finished = false AND a.product_id = p.product_id`
+            `SELECT a.real_auction_id, a.quantity, a.sold, p.product_id, p.stock_amount FROM public."Auctions" a, public."Products" p WHERE a.product_id IN (${orderedProducts}) AND a.finished = false AND a.product_id = p.product_id`,
           );
 
-          const config = {
-            headers: {
-              Authorization: `Bearer ${global.allegroAccessToken}` || '',
-              Accept: 'application/vnd.allegro.beta.v2+json',
-              ['Content-Type']: 'application/vnd.allegro.beta.v2+json',
-            },
-          };
+          // const config = {
+          //   headers: {
+          //     Authorization: `Bearer ${global.allegroAccessToken}` || '',
+          //     Accept: 'application/vnd.allegro.beta.v2+json',
+          //     ['Content-Type']: 'application/vnd.allegro.beta.v2+json',
+          //   },
+          // };
 
-          for (let i = 0; i < response.rows.length; i++) {
-            let test = await axios.get(`${process.env.API_ALLEGRO_URL}/sale/product-offers/${response.rows[i].real_auction_id}`, config);
+          // for (let i = 0; i < response.rows.length; i++) {
+          //   let test = await axios.get(`${process.env.API_ALLEGRO_URL}/sale/product-offers/${response.rows[i].real_auction_id}`, config);
 
-            console.log('siedzi', test.data.stock);
-          }
+          //   console.log('siedzi', test.data.stock);
+          // }
           res.send(response);
 
           // await axios.patch(

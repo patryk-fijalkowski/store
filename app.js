@@ -15,7 +15,6 @@ var orders = require('./routes/orders');
 var products = require('./routes/products');
 var orderedProducts = require('./routes/orderedProducts');
 var shippingsMethod = require('./routes/shippingsMethod');
-const stockRefreshMiddleware = require('./middleware/stockRefreshMiddleware');
 
 var app = express();
 
@@ -37,7 +36,7 @@ app.use('/ordered-products', orderedProducts);
 app.use('/shippings-method', shippingsMethod);
 app.use('/users', usersRouter);
 // app.use("/webhook", allegroMiddleware, authMiddleware, webhook);
-// app.use('/webhook', authMiddleware, stockRefreshMiddleware, webhook);
+// app.use('/webhook', authMiddleware, webhook);
 app.use('/webhook', authMiddleware, webhook);
 
 // catch 404 and forward to error handler
