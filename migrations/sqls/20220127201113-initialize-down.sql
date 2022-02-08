@@ -16,3 +16,4 @@ DROP TABLE IF EXISTS public."Products";
 
 DROP TABLE IF EXISTS public."Shippings";
 
+DROP TABLE IF EXISTS public."History";

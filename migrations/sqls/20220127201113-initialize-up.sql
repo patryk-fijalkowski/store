@@ -98,3 +98,19 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public."Shippings"
     OWNER to postgres;
+
+-- Table: public.History
+
+
+CREATE TABLE IF NOT EXISTS public."History"
+(
+    date character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    order_id character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    event character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    data json
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."History"
+    OWNER to postgres;

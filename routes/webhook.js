@@ -4,7 +4,7 @@ const moment = require('moment');
 var router = express.Router();
 const client = require('../db/db');
 
-const insertOrderIntoDB = async (order, event) => {
+const insertOrderIntoDB = (order, event) => {
   const query = `INSERT INTO public."Orders"(
     order_id, order_date, modification_date, paid, source, status, shipping_cost, shipping_id)
     VALUES('${order.order_id}', '${order.date}', '${moment().format('YYYY-MM-DDD H:mm:ss')}', '${order.paid}','${
@@ -15,7 +15,7 @@ const insertOrderIntoDB = async (order, event) => {
   return client.query(query);
 };
 
-const insertOrderProductsIntoDB = async (order) => {
+const insertOrderProductsIntoDB = (order) => {
   const orderProductsToInsert = order.products.map(
     (product) =>
       `('${product.id}', '${product.product_id}', '${product.order_id}', '${product.price}', '${product.stock_id}','${
@@ -32,6 +32,14 @@ const insertOrderProductsIntoDB = async (order) => {
   return client.query(query);
 };
 
+const insertHistoryRecord = (data, event) => {
+  const query = `INSERT INTO public."History"(
+    date, order_id, event, data)
+    VALUES ('${moment().format('YYYY-MM-DDD H:mm:ss')}', '${data.order_id}', '${event}', '${JSON.stringify(data)}');`;
+
+  return client.query(query);
+};
+
 router.post('/', async function (req, res, next) {
   req.setTimeout(500000);
 
@@ -44,7 +52,11 @@ router.post('/', async function (req, res, next) {
 
       await insertOrderProductsIntoDB(req.body);
       console.log('Dodano zamówione produkty');
-      res.send(200);
+
+      await insertHistoryRecord(req.body, event);
+      console.log('Dodano zapytanie do historii');
+
+      res.send();
       break;
     case 'order.delete':
       console.log(event);
