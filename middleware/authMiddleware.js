@@ -11,7 +11,7 @@ var authMiddleware = async function (req, res, next) {
         headers: {
           Authorization: `Basic ${token}`,
         },
-      }
+      },
     );
 
     global.shoperAccessToken = response.data.access_token;
