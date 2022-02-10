@@ -12,7 +12,7 @@ router.get('/', async function (req, res, next) {
       },
     };
 
-    const response = await axios.get(`${process.env.SHOPER_URL}/webapi/rest/products?limit=50`, config);
+    const response = await axios.get(`${process.env.SHOPER_URL}/webapi/rest/producers?limit=50`, config);
     const pages = response.data.pages;
 
     let bulkRequestBody = [];
@@ -21,7 +21,7 @@ router.get('/', async function (req, res, next) {
     for (let i = 1; i <= pages; i++) {
       batch.push({
         id: `orders_page_${i}`,
-        path: `/webapi/rest/products`,
+        path: `/webapi/rest/producers`,
         method: 'GET',
         params: {
           limit: 50,
@@ -45,33 +45,7 @@ router.get('/', async function (req, res, next) {
       );
     });
   } catch (e) {
-    res.status(500).send({ message: 'Cos nie tak w zamowieniach' });
-  }
-});
-
-router.put('/:id', async function (req, res, next) {
-  console.log(req.body, req.params.id);
-  try {
-    const config = {
-      headers: {
-        'Authorization': req.headers.authorization || '',
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const data = {
-      translations: {
-        pl_PL: {
-          description: req.body.description,
-        },
-      },
-    };
-
-    res.send(data);
-    const response = await axios.put(`${process.env.SHOPER_URL}/webapi/rest/products/${req.params.id}`, JSON.stringify(data), config);
-    res.send(response.data);
-  } catch (e) {
-    res.status(500).send({ message: e });
+    res.status(500).send({ message: 'Cos nie tak w producentach' });
   }
 });
 
