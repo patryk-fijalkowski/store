@@ -29,11 +29,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-var router = express.Router();
-const test = router.get('/', function (req, res, next) {
-  console.log(req.params);
-});
-app.use('/test/:id', test);
 
 app.use('/', indexRouter);
 app.use('/auth', auth);
