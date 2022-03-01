@@ -1,6 +1,7 @@
 const { default: axios } = require('axios');
 const { response } = require('express');
 var express = require('express');
+const getBulkUtil = require('../utils/getBulkUtil');
 var router = express.Router();
 
 /* GET users listing. */
@@ -11,41 +12,10 @@ router.get('/', async function (req, res, next) {
         Authorization: req.headers.authorization || '',
       },
     };
-
-    const response = await axios.get(`${process.env.SHOPER_URL}/webapi/rest/producers?limit=50`, config);
-    const pages = response.data.pages;
-
-    let bulkRequestBody = [];
-    let batch = [];
-
-    for (let i = 1; i <= pages; i++) {
-      batch.push({
-        id: `orders_page_${i}`,
-        path: `/webapi/rest/producers`,
-        method: 'GET',
-        params: {
-          limit: 50,
-          page: i,
-        },
-      });
-
-      if (i % 25 === 0 || i === pages) {
-        bulkRequestBody.push(batch);
-        batch = [];
-      }
-    }
-    Promise.all(
-      bulkRequestBody.map((batch) => axios.post(`${process.env.SHOPER_URL}/webapi/rest/bulk`, JSON.stringify(batch), config)),
-    ).then((data) => {
-      res.send(
-        data
-          .map((el) => el.data.items.map((item) => item.body.list))
-          .flat()
-          .flat(),
-      );
-    });
+    const data = await getBulkUtil('producers', config);
+    res.send(data);
   } catch (e) {
-    res.status(500).send({ message: 'Cos nie tak w producentach' });
+    res.status(500).send({ message: 'Cos nie tak w zamowieniach' });
   }
 });
 
