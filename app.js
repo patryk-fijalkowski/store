@@ -41,7 +41,7 @@ app.use('/shippings-method', shippingsMethod);
 app.use('/users', usersRouter);
 // app.use("/webhook", allegroMiddleware, authMiddleware, webhook);
 
-app.use('/webhook', authMiddleware, webhook);
+app.use('/webhook', authMiddleware, allegroMiddleware, webhook);
 // app.use('/auctions', allegroMiddleware, authMiddleware, auctions);
 
 // catch 404 and forward to error handler

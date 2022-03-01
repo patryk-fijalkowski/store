@@ -3,6 +3,8 @@ var express = require('express');
 const moment = require('moment');
 var router = express.Router();
 const client = require('../db/db');
+const updateDB = require('../db/updateDB');
+const { updateAuctionsTable } = require('../db/utils/updateTablesUtil');
 
 const insertOrderIntoDB = (order, event) => {
   const query = `INSERT INTO public."Orders"(
@@ -47,14 +49,68 @@ router.post('/', async function (req, res, next) {
 
   switch (event) {
     case 'order.paid':
-      await insertOrderIntoDB(req.body, event);
-      console.log('Dodano zamówienie do bazy');
+      if (req.body.payment.name !== 'Allegro') {
+        // await updateAuctionsTable();
+        console.log('Auctions updated');
 
-      await insertOrderProductsIntoDB(req.body);
-      console.log('Dodano zamówione produkty');
+        for (let i = 0; i < req.body.products.length; i++) {
+          const product_id = req.body.products[i].product_id;
+          const quantity = req.body.products[i].quantity;
+          const query = `SELECT product_id, real_auction_id
+          FROM public."Auctions" WHERE finished = 'false' AND product_id = '${product_id}';`;
+          const response = await client.query(query);
 
-      await insertHistoryRecord(req.body, event);
-      console.log('Dodano zapytanie do historii');
+          console.log(response.rows);
+          if (!response.rows.length) {
+            return res.sendStatus(404);
+          }
+
+          const realAuctionId = response.rows[0].real_auction_id;
+
+          const allegroResponse = await axios.get(
+            `${process.env.API_ALLEGRO_URL}/sale/product-offers/${realAuctionId}`,
+            global.allegroAuthConfig,
+          );
+
+          if (allegroResponse.data.publication.status === 'ENDED') {
+            return res.send(404);
+          }
+
+          const shoperResponse = await axios.get(`${process.env.SHOPER_URL}/webapi/rest/products/${product_id}`, global.shoperAuthConfig);
+
+          console.log(
+            product_id,
+            quantity,
+            realAuctionId,
+            allegroResponse.data.stock.available,
+            allegroResponse.data.stock.available - quantity,
+            allegroResponse.data.publication.status,
+            shoperResponse.data.stock.stock,
+          );
+          console.log(allegroResponse);
+          // await axios.patch(
+          //   `${process.env.API_ALLEGRO_URL}/sale/product-offers/${realAuctionId}`,
+          //   {
+          //     stock: {
+          //       available: shoperResponse.data.stock.stock,
+          //     },
+          //   },
+          //   global.allegroAuthConfig,
+          // );
+          await client.query(`INSERT INTO public."History"(
+            date, order_id, event, data)
+            VALUES ('${moment().format('YYYY-MM-DDD H:mm:ss')}', '${req.body.order_id}', '${event}', '${JSON.stringify(req.body)}');`);
+          return res.sendStatus(200);
+        }
+      }
+      // await insertOrderIntoDB(req.body, event);
+      // console.log('Dodano zamówienie do bazy');
+
+      // await insertOrderProductsIntoDB(req.body);
+      // console.log('Dodano zamówione produkty');
+
+      // await insertHistoryRecord(req.body, event);
+      // console.log('Dodano zapytanie do historii');
 
       res.send();
       break;

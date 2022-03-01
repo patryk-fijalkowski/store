@@ -14,7 +14,12 @@ var authMiddleware = async function (req, res, next) {
       },
     );
 
-    global.shoperAccessToken = response.data.access_token;
+    global.shoperAuthConfig = {
+      headers: {
+        Authorization: `Bearer ${response.data.access_token}` || '',
+      },
+    };
+
     next();
   } catch (error) {
     res.status(500).send(error);

@@ -1,5 +1,7 @@
 /* Replace with your SQL commands */
 
+/* Replace with your SQL commands */
+
 -- Table: public.Order-products
 
 
@@ -16,8 +18,8 @@ CREATE TABLE IF NOT EXISTS public."Order-products"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."Order-products"
-    OWNER to postgres;
+-- ALTER TABLE IF EXISTS public."Order-products"
+--     OWNER to brillar;
 
 -- Table: public.Orders
 
@@ -37,8 +39,8 @@ CREATE TABLE IF NOT EXISTS public."Orders"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."Orders"
-    OWNER to postgres;
+-- ALTER TABLE IF EXISTS public."Orders"
+--     OWNER to brillar;
 
 -- Table: public.Products
 
@@ -57,8 +59,8 @@ CREATE TABLE IF NOT EXISTS public."Products"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."Products"
-    OWNER to postgres;
+-- ALTER TABLE IF EXISTS public."Products"
+--     OWNER to brillar;
 
 -- Table: public.Auctions
 
@@ -79,8 +81,8 @@ CREATE TABLE IF NOT EXISTS public."Auctions"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."Auctions"
-    OWNER to postgres;
+-- ALTER TABLE IF EXISTS public."Auctions"
+--     OWNER to brillar;
 
 
 -- Table: public.Shippings
@@ -96,8 +98,8 @@ CREATE TABLE IF NOT EXISTS public."Shippings"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."Shippings"
-    OWNER to postgres;
+-- ALTER TABLE IF EXISTS public."Shippings"
+--     OWNER to brillar;
 
 -- Table: public.History
 
@@ -112,5 +114,5 @@ CREATE TABLE IF NOT EXISTS public."History"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."History"
-    OWNER to postgres;
+-- ALTER TABLE IF EXISTS public."History"
+--     OWNER to brillar;

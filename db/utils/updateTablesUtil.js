@@ -3,12 +3,7 @@ const getBulkUtil = require('../../utils/getBulkUtil');
 const client = require('../db');
 
 var updateOrdersTable = async function () {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${global.shoperAccessToken}` || '',
-    },
-  };
-  const orders = await getBulkUtil('orders', config);
+  const orders = await getBulkUtil('orders', global.shoperAuthConfig);
 
   const ordersToInsert = orders.map(
     (order) =>
@@ -28,17 +23,12 @@ var updateOrdersTable = async function () {
 
    COMMIT;   
 `;
+
   return client.query(query);
 };
 
 var updateAuctionsTable = async function () {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${global.shoperAccessToken}` || '',
-    },
-  };
-
-  const auctions = await getBulkUtil('auctions', config);
+  const auctions = await getBulkUtil('auctions', global.shoperAuthConfig);
 
   const auctionsToInsert = auctions.map(
     (auction) =>
@@ -61,13 +51,7 @@ var updateAuctionsTable = async function () {
 };
 
 var updateProductsTable = async function () {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${global.shoperAccessToken}` || '',
-    },
-  };
-
-  const products = await getBulkUtil('products', config);
+  const products = await getBulkUtil('products', global.shoperAuthConfig);
 
   const productsToInsert = products.map(
     (product) =>
@@ -93,13 +77,7 @@ var updateProductsTable = async function () {
 };
 
 var updateOrderProductsTable = async function () {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${global.shoperAccessToken}` || '',
-    },
-  };
-
-  const orderProducts = await getBulkUtil('order-products', config);
+  const orderProducts = await getBulkUtil('order-products', global.shoperAuthConfig);
 
   const orderProductsToInsert = orderProducts.map(
     (product) =>
@@ -125,13 +103,7 @@ var updateOrderProductsTable = async function () {
 };
 
 var updateShippingsTable = async function () {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${global.shoperAccessToken}` || '',
-    },
-  };
-
-  const shippings = await getBulkUtil('shippings', config);
+  const shippings = await getBulkUtil('shippings', global.shoperAuthConfig);
 
   const shippingsToInsert = shippings.map((shipping) => `('${shipping.shipping_id}', '${shipping.name}', '${shipping.cost}')`);
 
