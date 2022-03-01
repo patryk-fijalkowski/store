@@ -19,4 +19,30 @@ router.get('/', async function (req, res, next) {
   }
 });
 
+router.put('/:id', async function (req, res, next) {
+  console.log(req.body, req.params.id);
+  try {
+    const config = {
+      headers: {
+        'Authorization': req.headers.authorization || '',
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const data = {
+      translations: {
+        pl_PL: {
+          description: req.body.description,
+        },
+      },
+    };
+
+    res.send(data);
+    const response = await axios.put(`${process.env.SHOPER_URL}/webapi/rest/products/${req.params.id}`, JSON.stringify(data), config);
+    res.send(response.data);
+  } catch (e) {
+    res.status(500).send({ message: e });
+  }
+});
+
 module.exports = router;
