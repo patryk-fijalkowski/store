@@ -12,10 +12,14 @@ router.get('/', async function (req, res, next) {
         Authorization: req.headers.authorization || '',
       },
     };
-    const data = await getBulkUtil('orders', config);
+    console.log(req.query.dateFrom);
+    const { dateFrom, dateTo } = req.query;
+    const filters = dateFrom && dateTo && JSON.stringify({ date: { '>=': dateFrom, '<=': dateTo } });
+    console.log('asdasdd', filters);
+    const data = await getBulkUtil('orders', config, filters);
     res.send(data);
   } catch (e) {
-    res.status(500).send({ message: 'Cos nie tak w zamowieniach' });
+    res.status(500).send({ message: 'Cos nie tak w zamowieniach', error: e });
   }
 });
 
