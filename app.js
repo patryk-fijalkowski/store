@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var authMiddleware = require('./middleware/authMiddleware');
-var allegroMiddleware = require('./middleware/allegroMiddleware');
+// var allegroMiddleware = require('./middleware/allegroMiddleware');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -41,7 +41,7 @@ app.use('/shippings-method', shippingsMethod);
 app.use('/users', usersRouter);
 // app.use("/webhook", allegroMiddleware, authMiddleware, webhook);
 
-app.use('/webhook', authMiddleware, allegroMiddleware, webhook);
+app.use('/webhook', authMiddleware, webhook);
 // app.use('/auctions', allegroMiddleware, authMiddleware, auctions);
 
 // catch 404 and forward to error handler
