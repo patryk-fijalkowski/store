@@ -33,27 +33,29 @@ router.get("/", async (req, res) => {
               "@href": response.data.feed.link[0]["$"].href,
             },
             updated: { "#text": response.data.feed.updated[0] },
-            entry: response.data.feed.entry.map((item) => ({
-              id: item.id[0],
-              title: item.title[0],
-              description: item.description[0],
-              product_type: item.product_type[0],
-              link: item.link[0],
-              condition: item.condition[0],
-              idavailability: item.availability[0],
-              inventory: item.inventory[0],
-              price: item.price[0],
-              brand: item.brand[0],
-              gtin: item.gtin ? item.gtin[0] : "",
-              mpn: item.mpn[0],
-              shipping_weight: item.shipping_weight[0],
-              image_link: item.image_link[0],
-              additional_image_link: item.additional_image_link
-                ? item.additional_image_link.map((additional_link) => ({
-                    "#text": additional_link,
-                  }))
-                : [],
-            })),
+            entry: response.data.feed.entry
+              .filter((item) => !item.link[0].includes("medesthetic"))
+              .map((item) => ({
+                id: item.id[0],
+                title: item.title[0],
+                description: item.description[0],
+                product_type: item.product_type[0],
+                link: item.link[0],
+                condition: item.condition[0],
+                idavailability: item.availability[0],
+                inventory: item.inventory[0],
+                price: item.price[0],
+                brand: item.brand[0],
+                gtin: item.gtin ? item.gtin[0] : "",
+                mpn: item.mpn[0],
+                shipping_weight: item.shipping_weight[0],
+                image_link: item.image_link[0],
+                additional_image_link: item.additional_image_link
+                  ? item.additional_image_link.map((additional_link) => ({
+                      "#text": additional_link,
+                    }))
+                  : [],
+              })),
           },
         };
         var feed = builder
