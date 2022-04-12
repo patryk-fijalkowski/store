@@ -11,6 +11,7 @@ var allegroMiddleware = require("./middleware/allegroMiddleware");
 
 var indexRouter = require("./routes/index");
 var skapiecRouter = require("./routes/XMLskapiec");
+var ceneoRouter = require("./routes/XMLceneo");
 var usersRouter = require("./routes/users");
 var webhook = require("./routes/webhook");
 
@@ -36,6 +37,7 @@ app.use(xmlparser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/xml/skapiec", skapiecRouter);
+app.use("/xml/ceneo", ceneoRouter);
 app.use("/", indexRouter);
 app.use("/auth", auth);
 app.use("/orders", orders);
