@@ -21,40 +21,39 @@ router.get("/", async (req, res) => {
   axios(config)
     .then(function (response) {
       if (response.data.hasOwnProperty("offers")) {
-        console.log(
-          response.data.offers.o.map((el) => el.imgs[0].main[0]["$"].url)
-        );
         var feedObj = {
           offers: {
             "@version": response.data.offers["$"].version,
             "@xmlns:xsi": response.data.offers["$"]["xmlns:xsi"],
-            o: response.data.offers.o.map((item) => ({
-              "@weight": item["$"].weight,
-              "@stock": item["$"].stock,
-              "@set": item["$"].set,
-              "@avail": item["$"].avail,
-              "@price": item["$"].price,
-              "@url": item["$"].url,
-              "@id": item["$"].id,
-              cat: { $: item.cat[0] },
-              name: { $: item.name[0] },
-              imgs: {
-                main: {
-                  "@url": item.imgs[0].main[0]["$"].url,
+            o: response.data.offers.o
+              .filter((item) => !item["$"].url.includes("medesthetic"))
+              .map((item) => ({
+                "@weight": item["$"].weight,
+                "@stock": item["$"].stock,
+                "@set": item["$"].set,
+                "@avail": item["$"].avail,
+                "@price": item["$"].price,
+                "@url": item["$"].url,
+                "@id": item["$"].id,
+                cat: { $: item.cat[0] },
+                name: { $: item.name[0] },
+                imgs: {
+                  main: {
+                    "@url": item.imgs[0].main[0]["$"].url,
+                  },
                 },
-              },
-              desc: { $: item.desc ? item.desc[0] : "" },
-              attrs: {
-                a: item.attrs.map((attr) => {
-                  return attr.a.map((el) => {
-                    return {
-                      "@name": el["$"] ? el["$"].name : "",
-                      $: el ? el["_"] : "",
-                    };
-                  });
-                }),
-              },
-            })),
+                desc: { $: item.desc ? item.desc[0] : "" },
+                attrs: {
+                  a: item.attrs.map((attr) => {
+                    return attr.a.map((el) => {
+                      return {
+                        "@name": el["$"] ? el["$"].name : "",
+                        $: el ? el["_"] : "",
+                      };
+                    });
+                  }),
+                },
+              })),
           },
         };
         // console.log(feedObj);
