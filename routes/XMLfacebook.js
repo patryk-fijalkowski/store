@@ -42,7 +42,7 @@ router.get("/", async (req, res) => {
                 product_type: item.product_type[0],
                 link: item.link[0],
                 condition: item.condition[0],
-                idavailability: item.availability[0],
+                availability: item.availability[0],
                 inventory: item.inventory[0],
                 price: item.price[0],
                 brand: item.brand[0],
