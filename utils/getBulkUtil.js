@@ -16,7 +16,7 @@ async function fetchWithRetry(url, config, retries = 3) {
 const getBulkUtil = async (bulkQuery, config) => {
   try {
     const firstResponse = await axios.get(
-      `${process.env.SHOPER_URL}/webapi/rest/${bulkQuery}?limit=50&page=21`,
+      `${process.env.SHOPER_URL}/webapi/rest/${bulkQuery}?limit=50`,
       config
     );
 
